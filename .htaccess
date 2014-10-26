@@ -1,0 +1,10 @@
+DirectoryIndex index.html
+Options -Indexes
+
+<Files ~ "\.(log|php|html|htaccess)$">
+  deny from all 
+</Files>
+
+<Files index.html>
+allow from all
+</Files>
