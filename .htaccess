@@ -1,10 +1,9 @@
 DirectoryIndex index.html
 Options -Indexes
 
-<Files ~ "\.(log|php|html|htaccess)$">
+<Files ~ "\.(log|htaccess)$">
   deny from all 
 </Files>
-
-<Files index.html>
+<Files ~ "\.(js|php)$">
 allow from all
 </Files>
