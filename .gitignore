@@ -1,1 +1,4 @@
 easysqlphp/
+app/
+jquery.cookie.js
+test.php
