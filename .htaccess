@@ -7,7 +7,7 @@ deny from all
 <Files ~ "\.(php)$">
 deny from all
 </Files>
-<Files ~ "\.(js|html)$">
+<Files ~ "\.(js|html|css)$">
 allow from all
 </Files>
 <Files ~ "^(request.php)$">

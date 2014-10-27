@@ -23,42 +23,99 @@ function render(selector, data){
     container.append(data);
 }
 
-function form(){
-    $('form').submit(function(event){
+function render_by_array(data){
+    $.each(data, function(key){
+        render("#" + key, this);
+    });
+}
+
+function set_wait(wait){
+    if(wait !== 0){
+        sleep(wait).done(refresh);
+    }
+}
+
+function process(data){
+    render_by_array(data.html);
+    set_wait(data.order.wait);
+    submit();
+}
+
+function submit(){
+    form = $('form');
+    form.off();
+    form.submit(function(event){
         event.preventDefault();
         var form = $(this);
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: address + "/request?request=post",
-            type: "POST",
-            data: form.serialize(),
+            url: address + "/request.php?request=form&" + form.serialize(),
+            type: "GET",
             timeout: 3000,
             dataType: "json",
-        }).always(function(result){
+        }).always(function(data){
             button.attr('disabled', false);
         }).done(function(data){
             form[0].reset();
-            if($.trim(data.html) !== ""){//not empty
-                render(data.html);
-            }
+            process(data);
         }).fail(function(result){
-            alert(error_message);
+            alert(connect_error + " submit");
         });
     });
 }
 
-function render_from_url(selector, url){
+function render_from_url(url){
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
     }).done(function(data){
-        $.each(data.html, function(key){
-            render("#" + key, this);
-        });
-        return data.order.wait;
+        process(data);
     }).fail(function(data){
-        alert(error_message);
+        alert(connect_error + " render_from_url" + url);
+    });
+}
+
+function sleep(ms){
+    var d = new $.Deferred;
+    setTimeout(function(){
+        d.resolve(ms);
+    }, ms);
+    return d.promise();
+};
+
+function refresh(){
+    render_from_url(address + "/request.php?request=refresh&token=" + token);
+}
+
+function login(){
+    render_from_url(address + "/request.php?request=loginform");
+    form = $('form');
+    form.off();
+    form.submit(function(event){
+        event.preventDefault();
+        var form = $(this);
+        var button = form.find('button');
+        button.attr('disabled', true);
+        $.ajax({
+            url: address + "/request.php?request=login&" + form.serialize(),
+            type: "GET",
+            timeout: 3000,
+            dataType: "json",
+        }).always(function(data){
+            button.attr('disabled', false);
+        }).done(function(data){
+            form[0].reset();
+            if(data.meta.state !== "failure"){
+                token = data.order.token;
+                refresh();
+            }else{
+                alert(login_error);
+            }
+            process(data);
+        }).fail(function(result){
+            alert(connect_error + " login");
+        });
     });
 }
