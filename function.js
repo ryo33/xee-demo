@@ -21,14 +21,17 @@ function render(selector, data){
     var container = $(selector);
     container.empty();
     container.append(data);
+}
+
+function form(){
     $('form').submit(function(event){
         event.preventDefault();
         var form = $(this);
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
+            url: address + "/request?request=post",
+            type: "POST",
             data: form.serialize(),
             timeout: 3000,
             dataType: "json",
@@ -51,7 +54,10 @@ function render_from_url(selector, url){
         url: url,
         dataType: "json",
     }).done(function(data){
-        render(selector, data.html);
+        $.each(data.html, function(key){
+            render("#" + key, this);
+        });
+        return data.order.wait;
     }).fail(function(data){
         alert(error_message);
     });
