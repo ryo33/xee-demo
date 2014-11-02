@@ -50,7 +50,7 @@ function submit(){
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: address + "/request.php?request=form&" + form.serialize(),
+            url: address + "request.php?request=app/form&" + form.serialize(),
             type: "GET",
             timeout: 3000,
             dataType: "json",
@@ -86,11 +86,11 @@ function sleep(ms){
 };
 
 function refresh(){
-    render_from_url(address + "/request.php?request=refresh&token=" + token);
+    render_from_url(address + "request.php?request=app/refresh&token=" + token);
 }
 
 function login(){
-    render_from_url(address + "/request.php?request=loginform");
+    render_from_url(address + "request.php?request=app/loginform");
     form = $('form');
     form.off();
     form.submit(function(event){
@@ -99,7 +99,7 @@ function login(){
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: address + "/request.php?request=login&" + form.serialize(),
+            url: address + "request.php?request=app/login&" + form.serialize(),
             type: "GET",
             timeout: 3000,
             dataType: "json",
