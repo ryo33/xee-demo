@@ -90,7 +90,6 @@ function refresh(){
 }
 
 function login(){
-    render_from_url(address + "/request.php?request=loginform");
     form = $('form');
     form.off();
     form.submit(function(event){
@@ -111,11 +110,12 @@ function login(){
                 token = data.order.token;
                 refresh();
             }else{
-                alert(login_error);
+                alert(data.order.alert);
             }
+            form.empty();
             process(data);
         }).fail(function(result){
-            alert(connect_error + " login");
+            alert(connect_error);
         });
     });
 }

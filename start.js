@@ -1,6 +1,7 @@
 $("title").append(title);
 $("#header").append(header);
 $("#footer").append(footer);
+$("button").text(submit_text);
 
 //TODO access setting.php and get settings
 
