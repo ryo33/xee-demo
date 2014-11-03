@@ -1,5 +1,5 @@
 <?php
-//setting
+//////////////////////////////////////////////////////////////////////////////////setting
 if($_SERVER["SERVER_NAME"] === "microecolib.localhost"){
     require '../SETTING2.php';
 }else{
@@ -9,15 +9,20 @@ require '../app/setting.php';
 $includes = array(
     "function",
     "EasySql",
-    "login",
+    "prepare",
 );
 foreach($includes as $include){
     require '../include/' . $include . '.php';
 }
+///setting
 define('FW', 0);
-define('APP', 0);
+define('APP', 1);
+//game
+define('CREATED', 0);
+define('STARTED', 1);
+define('ENDED', 2);
 
-//sanitizing
+/////////////////////////////////////////////////////////////////////////////////////////////sanitizing
 foreach($_GET  as $key => $value){
     $_GET[$key] = mb_convert_encoding($_GET[$key],'utf8','auto');
 }

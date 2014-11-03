@@ -35,9 +35,9 @@ function stremp($text){
 
 function check_request($arg){
     if(stremp($arg)){
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 function tag($text, $tag = 'p'){

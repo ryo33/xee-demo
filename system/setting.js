@@ -17,5 +17,5 @@ function get_settings(){
     $.each(app_settings, function(){
         result.push(this[0]);
     });
-    return result.join(",");
+    return "&settings=" + result.join(",");
 }

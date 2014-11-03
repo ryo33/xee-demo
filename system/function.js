@@ -50,7 +50,7 @@ function submit(){
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: address + "system/request.php?request=app/form?id=" + id + "&" + form.serialize(),
+            url: address + "system/request.php?request=app/form?id=" + id + "&" + form.serialize() + serialize(settings),
             type: "GET",
             timeout: 3000,
             dataType: "json",
@@ -73,7 +73,7 @@ function render_from_url(url){
     }).done(function(data){
         process(data);
     }).fail(function(data){
-        alert(settings.connect_error + " render_from_url" + url);
+        alert(settings.connect_error);
     });
 }
 
@@ -86,7 +86,7 @@ function sleep(ms){
 };
 
 function refresh(){
-    render_from_url(address + "system/request.php?request=app/refresh&id=" + id);
+    render_from_url(address + "system/request.php?request=app/refresh&id=" + id + serialize(settings));
 }
 
 function get_number(text){
@@ -111,7 +111,7 @@ function login(){
             var button = form.find('button');
             button.attr('disabled', true);
             $.ajax({
-                url: address + "system/request.php?request=system/login?id=" + id + "&" + form.serialize(),
+                url: address + "system/request.php?request=system/login&" + form.serialize() + serialize(settings),
                 type: "GET",
                 timeout: 3000,
                 dataType: "json",
@@ -121,17 +121,25 @@ function login(){
                 form[0].reset();
                 if(data.meta.state !== "failure"){
                     id = data.order.id;
+                    set('id', id);
                     refresh();
+                    form.empty();
                 }else{
                     alert(data.order.alert);
                 }
-                form.empty();
-                process(data);
             }).fail(function(result){
                 alert(settings.connect_error);
             });
         }
     });
+}
+
+function serialize(array){
+    result = "";
+    for(key in array){
+        result += "&" + key + "=" + array[key];
+    }
+    return result
 }
 
 function admin(){

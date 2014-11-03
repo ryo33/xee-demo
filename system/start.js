@@ -10,7 +10,7 @@ var settings = {};
 var id = "";
 
 $.ajax({
-    url: address + "system/request.php?request=system/setting&settings=" + get_settings(),
+    url: address + "system/request.php?request=system/setting" + get_settings(),
     type: "GET",
     dataType: "json"
 }).done(function(data){

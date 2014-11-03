@@ -11,6 +11,7 @@ class EasySql{
     }
 
     function prepare($sql, $arg=null, $exec=false){
+        echo $sql;
         if($arg !== null){
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($arg);
