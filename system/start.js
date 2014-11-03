@@ -7,6 +7,7 @@ if(address.slice(-1) !== "/"){
 }
 
 var settings = {};
+var id = "";
 
 $.ajax({
     url: address + "system/request.php?request=system/setting&settings=" + get_settings(),
@@ -15,8 +16,8 @@ $.ajax({
 }).done(function(data){
     settings = data
     $("p").text(settings.login_message);
-    var token = get("token")
-    if(token){
+    id = get("id")
+    if(id){
         refresh();
     }else{
         login();

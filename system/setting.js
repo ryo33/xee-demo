@@ -5,7 +5,8 @@ var fm_settings = [
     ["group", "グループの人数"],
     ["connect_error", "接続エラー時のメッセージ"],
     ["login_error", "ログインエラー時のメッセージ"],
-    ["login_message", "ログインフォームに表示される説明"]
+    ["login_message", "ログインフォームに表示される説明"],
+    ["id_type", "idの形式（1にしたときだけ自然数のみ許可）"],
 ];
 
 function get_settings(){
