@@ -2,3 +2,5 @@ easysqlphp/
 app/
 jquery.cookie.js
 test.php
+requirement/
+SETTING.php
