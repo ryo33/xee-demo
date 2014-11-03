@@ -1,17 +1,10 @@
 <?php
 
-$fm_settings = array(
-    "people",
-    "group",
-);
+$settings = explode(',', $_GET['settings']);
 
 $result = array();
-foreach($fm_settings as $name){
-    $result[$name] = $con->fetchAll('SELECT `value` FROM `setting` WHERE `name` = ? AND `type` = ?', array($name, FW));
-}
-
 foreach($settings as $name){
-    $result[$name] = $con->fetchAll('SELECT `value` FROM `setting` WHERE `name` = ? AND `type` = ?', array($name, FW));
+    $result[$name] = $con->fetchColumn('SELECT `value` FROM `setting` WHERE `name` = ?', array($name));
 }
 
-render_json($result);
+echo render_json($result);

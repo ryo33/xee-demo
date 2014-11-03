@@ -1,40 +1,43 @@
 <?php
+class EasySql{
 
-$pdo = new PDO($mysql_dsn, $mysql_user, $mysql_password);
-$fetch_mode = PDO::FETCH_ASSOC;
+    private $pdo = null;
+    private $fetch_mode = PDO::FETCH_ASSOC;
 
-function prepare($sql, $arg=null, $exec=false){
-    global $pdo;
-    if($arg !== null){
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($arg);
-        return $stmt;
-    }else{
-        if($exec){
-            return $pdo->exec($sql);
+    function __construct($dsn, $user, $password, $fetch_mode=PDO::FETCH_ASSOC){
+        $this->pdo = new PDO($dsn, $user, $password);
+        $this->fetch_mode = $fetch_mode;
+    }
+
+    function prepare($sql, $arg=null, $exec=false){
+        if($arg !== null){
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($arg);
+            return $stmt;
         }else{
-            return $pdo->query($sql);
+            if($exec){
+                return $this->pdo->exec($sql);
+            }else{
+                return $this->pdo->query($sql);
+            }
         }
     }
+    function fetch($sql, $arg=null){
+        return $this->prepare($sql, $arg)->fetch($this->fetch_mode);
+    }
+    function fetchAll($sql, $arg=null){
+        return $this->prepare($sql, $arg)->fetchAll($this->fetch_mode);
+    }
+    function fetchColumn($sql, $arg=null){
+        return $this->prepare($sql, $arg)->fetchColumn();
+    }
+    function fetchColumnAll($sql, $arg=null){
+        return $this->prepare($sql, $arg)->fetchAll(PDO::FETCH_COLUMN);
+    } 
+    function execute($sql, $arg=null){
+        $this->prepare($sql, $arg, true);
+    }
+    function insert($table, $columns, $values){
+        $this->execute('INSERT INTO `' . $table . '`(`' . implode('`, `', $columns) . '`)VALUES(' . str_repeat('?,', count($columns) - 1) . '?)', $values);
+    } 
 }
-function fetch($sql, $arg=null){
-    global $fetch_mode;
-    return prepare($sql, $arg)->fetch($fetch_mode);
-}
-function fetchAll($sql, $arg=null){
-    global $fetch_mode;
-    return prepare($sql, $arg)->fetchAll($fetch_mode);
-}
-function fetchColumn($sql, $arg=null){
-    return prepare($sql, $arg)->fetchColumn();
-}
-function fetchColumnAll($sql, $arg=null){
-    return prepare($sql, $arg)->fetchAll(PDO::FETCH_COLUMN);
-} 
-function execute($sql, $arg=null){
-    prepare($sql, $arg, true);
-}
-function insert($table, $columns, $values){
-    execute('INSERT INTO `' . $table . '`(`' . implode('`, `', $columns) . '`)VALUES(' . str_repeat('?,', count($columns) - 1) . '?)', $values);
-}
-

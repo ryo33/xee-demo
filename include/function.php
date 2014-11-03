@@ -119,13 +119,17 @@ function delete_null_byte($value){
 }
 
 function render_json($data){
+    $result = array();
     foreach($data as $key=>$item){
         if(is_string($item)){
-            echo '"$key": "$item",';
+            if(is_numeric($item)){
+                $result[] = "\"$key\": $item";
+            }else{
+                $result[] = "\"$key\": \"$item\"";
+            }
         }else{
-            echo '"$key": {';
-            renderjson($item);
-            echo '},';
+            $result[] = "$key: " . render_json($item);
         }
     }
+    return '{' . join(', ', $result) .'}';
 }

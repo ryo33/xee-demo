@@ -1,14 +1,14 @@
 <?php
 //setting
-require './SETTING.php';
-require './app/setting.php';
+require '../SETTING.php';
+require '../app/setting.php';
 $includes = array(
     "function",
     "EasySql",
     "login",
 );
 foreach($includes as $include){
-    require './include/' . $include . '.php';
+    require '../include/' . $include . '.php';
 }
 define('FW', 0);
 define('APP', 0);

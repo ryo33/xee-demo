@@ -60,7 +60,7 @@ function submit(){
             form[0].reset();
             process(data);
         }).fail(function(result){
-            alert(connect_error + " submit");
+            alert(setting.connect_error + " submit");
         });
     });
 }
@@ -73,7 +73,7 @@ function render_from_url(url){
     }).done(function(data){
         process(data);
     }).fail(function(data){
-        alert(connect_error + " render_from_url" + url);
+        alert(setting.connect_error + " render_from_url" + url);
     });
 }
 
@@ -115,7 +115,7 @@ function login(){
             form.empty();
             process(data);
         }).fail(function(result){
-            alert(connect_error);
+            alert(setting.connect_error);
         });
     });
 }
