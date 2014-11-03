@@ -1,7 +1,6 @@
 $("title").append(title);
 $("#header").append(header);
 $("#footer").append(footer);
-$("button").text(submit_text);
 address = location.href;
 if(address.slice(-1) !== "/"){
     address = address + "/";

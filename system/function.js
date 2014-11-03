@@ -60,7 +60,7 @@ function submit(){
             form[0].reset();
             process(data);
         }).fail(function(result){
-            alert(setting.connect_error + " submit");
+            alert(settings.connect_error + " submit");
         });
     });
 }
@@ -73,7 +73,7 @@ function render_from_url(url){
     }).done(function(data){
         process(data);
     }).fail(function(data){
-        alert(setting.connect_error + " render_from_url" + url);
+        alert(settings.connect_error + " render_from_url" + url);
     });
 }
 
@@ -91,6 +91,7 @@ function refresh(){
 
 function login(){
     form = $('form');
+    form.append('<p>' + settings.login_message + '</p><input type="number" name="id" /><button type="submit">' + submit_text + '</button>');
     form.off();
     form.submit(function(event){
         event.preventDefault();
@@ -98,7 +99,7 @@ function login(){
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: address + "system/request.php?request=app/login&" + form.serialize(),
+            url: address + "system/request.php?request=system/login&" + form.serialize(),
             type: "GET",
             timeout: 3000,
             dataType: "json",
@@ -115,7 +116,7 @@ function login(){
             form.empty();
             process(data);
         }).fail(function(result){
-            alert(setting.connect_error);
+            alert(settings.connect_error);
         });
     });
 }

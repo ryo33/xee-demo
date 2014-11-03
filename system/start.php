@@ -1,6 +1,10 @@
 <?php
 //setting
-require '../SETTING.php';
+if($_SERVER["SERVER_NAME"] === "microecolib.localhost"){
+    require '../SETTING2.php';
+}else{
+    require '../SETTING.php';
+}
 require '../app/setting.php';
 $includes = array(
     "function",
