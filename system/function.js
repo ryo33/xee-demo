@@ -6,6 +6,10 @@ function set(key, value){
     $.cookie(key, value);
 }
 
+function remove(key){
+    $.removeCookie(key)
+}
+
 function clear(){
     localStorage.clear();
 }
@@ -35,7 +39,18 @@ function set_wait(wait){
     }
 }
 
+function render_logout(){
+    if(!$("#footer").children("button").get(0)){
+        $("#footer").append("<button id=\"logout\">" + settings.logout.value + "</button>");
+        $("#logout").click(function(){
+            remove("id");
+            $(location).attr("href", "/" + app_id);
+        });
+    }
+}
+
 function process(data){
+    render_logout();
     render_by_array(data.html);
     if(data.order.alert){
         alert(data.order.alert);
@@ -55,16 +70,14 @@ function submit(){
         $.ajax({
             url: address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/form?id=" + id + "&" + form.serialize() + serialize_settings(),
             type: "GET",
-            timeout: 3000,
+            timeout: settings.timeout.value,
             dataType: "json",
         }).always(function(data){
             button.attr('disabled', false);
         }).done(function(data){
             form[0].reset();
             process(data);
-        }).fail(function(result){
-            alert(settings.connect_error.value + " submit");
-        });
+        }).fail(connect_error);
     });
 }
 
@@ -75,9 +88,7 @@ function render_from_url(url){
         dataType: "json",
     }).done(function(data){
         process(data);
-    }).fail(function(data){
-        alert(settings.connect_error.value);
-    });
+    }).fail(connect_error);
 }
 
 function sleep(ms){
@@ -102,13 +113,14 @@ function get_number(text){
 
 function login(){
     form = $('form');
-    form.append('<p>' + settings.login_message.value + '</p><input type="' + (settings.id_type.value ? 'number' : 'text') + '" name="id" required /><button type="submit">' + submit_text + '</button>');
+    form.empty();
+    form.append('<p>' + settings.login_message.value + '</p><input type="' + (settings.id_type.value ? 'number' : 'text') + '" name="id" required /><button type="submit">' + settings.submit.value + '</button>');
     form.off();
     form.submit(function(event){
         event.preventDefault();
         var form = $(this);
-        var id = form.find('input').val();
-        if(id == "admin"){
+        id = check_data(form.find('input').val());
+        if(id === settings.admin.value){
             admin();
         }else if(id.length !== 0 && (get_number(id) !== false || !settings.id_type.value)){
             var button = form.find('button');
@@ -116,7 +128,7 @@ function login(){
             $.ajax({
                 url: address + "system/request.php?app_id=" + app_id + "&request=system/login&" + form.serialize() + serialize_settings(),
                 type: "GET",
-                timeout: 3000,
+                timeout: settings.timeout.value,
                 dataType: "json",
             }).always(function(data){
                 button.attr('disabled', false);
@@ -125,16 +137,31 @@ function login(){
                 if(data.meta.state !== "failure"){
                     id = data.order.id;
                     set('id', id);
-                    refresh();
                     form.empty();
+                    check_game();
                 }else{
                     alert(data.order.alert);
                 }
-            }).fail(function(result){
-                alert(settings.connect_error.value);
-            });
+            }).fail(connect_error);
         }
     });
+}
+
+function check_game(){
+    render_logout();
+    $.ajax({
+        url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=get" + serialize_settings(),
+        type: "GET",
+        timeout: settings.timeout.value,
+        dataType: "json",
+    }).done(function(data){
+        if(check_data(data.order.state) === 1){
+            refresh();
+        }else{
+            $("#main").text(settings.waiting.value);
+            sleep(5000).done(check_game);
+        }
+    }).fail(connect_error);
 }
 
 function serialize(array){
@@ -154,13 +181,83 @@ function serialize_settings(){
 }
 
 function admin(){
-    
     var form = $("#form");
-    $.each(settings, function(){
-        
+    form.empty();
+    form.append("<p>Enter Password</p><input type=\"text\" /><button type=\"submit\">" + settings.submit.value + "</button>");
+    form.off();
+    form.submit(function(event){
+        event.preventDefault();
+        form = $(this);
+        if(check_data(form.find("input").val()) === settings.admin_password.value){
+            form.find("button").attr('disabled', true);
+            form.empty();
+            form.off();
+            $.each(settings, function(key, setting){
+                form.append("<p><label><input type=\"" + (setting.type ? "number" : "text") + "\" id=\"" + key + "\" name=\"" + key + "\" value=\"" + setting.value + "\" />" + setting.desc + "</label></p>");
+            });
+            form.append("<button type=\"submit\">" + settings.submit.value + "</button>");
+            admin_refresh();
+        }else{
+            login();
+        }
     });
 }
 
-function change_settings(){
+function admin_refresh(){
+    render_logout();
+    $.ajax({
+        url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=get" + serialize_settings(),
+        type: "GET",
+        timeout: settings.timeout.value,
+        dataType: "json",
+    }).done(function(data){
+        var main = $("#main");
+        main.empty();
+        main.append("<h3>Admin Page</h3>");
+        if(check_data(data.order.state) === 0 || check_data(data.order.state) === 1){
+            main.append("<button id=\"end\">Terminate The Game</button>");
+            main.children("button").click(function(){
+                $.ajax({
+                    url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=end" + serialize_settings(),
+                    type: "GET",
+                    timeout: settings.timeout.value,
+                    dataType: "json",
+                }).done(function(data){
+                    alert("Terminated The Game");
+                }).fail(connect_error);
+            });
+        }else{
+            main.append("<button id=\"end\">Start A Game</button>");
+            main.children("button").click(function(){
+                $.ajax({
+                    url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=start" + serialize_settings(),
+                    type: "GET",
+                    timeout: settings.timeout.value,
+                    dataType: "json",
+                }).done(function(data){
+                    alert("Started A Game");
+                }).fail(connect_error);
+            });
+        }
+        $.each(data.settings, function(key, setting){
+            $("#" + key).val(setting);
+            settings[key].value = setting;
+        });
+        sleep(5000).done(admin_refresh);
+    }).fail(connect_error);
+}
 
+function change_settings(){
+    //TODO
+}
+
+function check_data(data){
+    if(/^[0-9０-９]+$/.test(data)){
+        return Number(data);
+    }
+    return data;
+}
+
+function connect_error(){
+    alert(settings.connect_error.value);
 }

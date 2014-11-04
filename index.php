@@ -1,7 +1,7 @@
 <?php
 $address = isset($_SERVER['HTTPS']) ? 'https://' : 'http://' . $_SERVER['HTTP_HOST'] . '/';
 preg_match('/\/(\w+)\/?$/', $_SERVER['REQUEST_URI'], $matches);
-if(!isset($matche)){
+if(!isset($matches[1])){
     exit();//TODO redirect to the welcome page
 }
 ?>
@@ -25,7 +25,6 @@ echo 'var app_id = "' . ($matches[1]) . '"';
 <script src="<?php echo $address;?>requirement/jquery.js"></script>
 <script src="<?php echo $address;?>requirement/jquery.cookie.js"></script>
 <script src="<?php echo $address;?>app/<?php echo $matches[1];?>/template.js" charset="UTF-8"></script>
-<script src="<?php echo $address;?>system/setting.js" charset="UTF-8"></script>
 <script src="<?php echo $address;?>system/function.js" charset="UTF-8"></script>
 <script src="<?php echo $address;?>system/start.js" charset="UTF-8"></script>
 </body>

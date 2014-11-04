@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 $game_id = null;
 $state = null;
@@ -6,9 +6,10 @@ $state = null;
 function get_game(){
     global $app_id;
     global $con, $game_id, $state;
-    $game = $con->fetch('SELECT * FROM `game` WHERE `app_id` = ? ORDER BY `game_id` DESC', $app_id);
+    $game = $con->fetch('SELECT `game_id`, `state` FROM `game` WHERE `app_id` = ? ORDER BY `game_id` DESC', $app_id);
     $game_id = $game['game_id'];
     $state = $game['state'];
+    return $game;
 }
 
 function get_groups(){

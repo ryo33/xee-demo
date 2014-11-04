@@ -14,11 +14,10 @@ $.ajax({
     $("#header").append(header);
     $("#footer").append(footer);
     settings = data;
-    if(get("id")){
-        refresh();
+    if(id = get("id")){
+        check_game();
     }else{
         login();
         $("form").children("p").text(settings.login_message.value);
-        id = get("id");
     }
 });

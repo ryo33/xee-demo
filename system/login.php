@@ -1,19 +1,21 @@
 <?php
 
 function make_groups($players){
+    
+}
+
+function make_group($players){
 
 }
 
-function meke_group($players){
-
-}
-
-$id = get_get("id");
-$login_error = get_get("login_error");
+$id = get_get('id');
+$login_error = get_get('login_error');
+$people = get_get('people');
+$group = get_get('group');
 $result = array('meta'=>array(),'order'=>array());
 if(check_request($id)){
     $game = get_game();
-    if(!$game['game_id']){
+    if(!isset($game['game_id'])){
         $result['meta']['state'] = 'failure';
         $result['order']['alert'] = $login_error;
     }else if($con->fetchColumn('SELECT COUNT(`player_id`) FROM `player` WHERE `app_id` = ? AND `game_id` = ? AND `player_id` = ?',
@@ -32,7 +34,7 @@ if(check_request($id)){
         $con->insert('player', array('game_id', 'group_id', 'player_id', 'app_id'), array($game['game_id'], null, $id, $app_id));
         $players = $con->fetchAll('SELECT `player_id` FROM `player` WHERE `app_id` = ? `game_id` = ? AND `group_id` = ?', array($app_id, $game['game_id'], null));
         if(count($players) == $group){
-            make_group($players);
+            make_groups($players);
         }
         $result['meta']['state'] = 'success';
         $result['order']['id'] = $id;
