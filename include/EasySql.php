@@ -11,8 +11,10 @@ class EasySql{
     }
 
     function prepare($sql, $arg=null, $exec=false){
-        echo $sql;
         if($arg !== null){
+            if(!is_array($arg)){
+                $arg = array($arg);
+            }
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($arg);
             return $stmt;
@@ -24,22 +26,38 @@ class EasySql{
             }
         }
     }
+
     function fetch($sql, $arg=null){
-        return $this->prepare($sql, $arg)->fetch($this->fetch_mode);
+        try{
+            return $this->prepare($sql, $arg)->fetch($this->fetch_mode);
+        }catch(Exception $e){
+            exit($e->getMessage() . $sql);
+        }
     }
+
     function fetchAll($sql, $arg=null){
         return $this->prepare($sql, $arg)->fetchAll($this->fetch_mode);
     }
+
     function fetchColumn($sql, $arg=null){
         return $this->prepare($sql, $arg)->fetchColumn();
     }
+
     function fetchColumnAll($sql, $arg=null){
         return $this->prepare($sql, $arg)->fetchAll(PDO::FETCH_COLUMN);
-    } 
+    }
+
     function execute($sql, $arg=null){
         $this->prepare($sql, $arg, true);
     }
+
     function insert($table, $columns, $values){
+        if(!is_array($columns)){
+            $columns = array($columns);
+        }
+        if(!is_array($values)){
+            $values = array($values);
+        }
         $this->execute('INSERT INTO `' . $table . '`(`' . implode('`, `', $columns) . '`)VALUES(' . str_repeat('?,', count($columns) - 1) . '?)', $values);
     } 
 }

@@ -37,6 +37,9 @@ function set_wait(wait){
 
 function process(data){
     render_by_array(data.html);
+    if(data.order.alert){
+        alert(data.order.alert);
+    }
     set_wait(data.order.wait);
     submit();
 }
@@ -50,7 +53,7 @@ function submit(){
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: address + "system/request.php?request=app/form?id=" + id + "&" + form.serialize() + serialize(settings),
+            url: address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/form?id=" + id + "&" + form.serialize() + serialize_settings(),
             type: "GET",
             timeout: 3000,
             dataType: "json",
@@ -60,7 +63,7 @@ function submit(){
             form[0].reset();
             process(data);
         }).fail(function(result){
-            alert(settings.connect_error + " submit");
+            alert(settings.connect_error.value + " submit");
         });
     });
 }
@@ -73,7 +76,7 @@ function render_from_url(url){
     }).done(function(data){
         process(data);
     }).fail(function(data){
-        alert(settings.connect_error);
+        alert(settings.connect_error.value);
     });
 }
 
@@ -86,7 +89,7 @@ function sleep(ms){
 };
 
 function refresh(){
-    render_from_url(address + "system/request.php?request=app/refresh&id=" + id + serialize(settings));
+    render_from_url(address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/refresh&id=" + id + serialize_settings());
 }
 
 function get_number(text){
@@ -99,7 +102,7 @@ function get_number(text){
 
 function login(){
     form = $('form');
-    form.append('<p>' + settings.login_message + '</p><input type="' + (settings.id_type ? 'number' : 'text') + '" name="id" required /><button type="submit">' + submit_text + '</button>');
+    form.append('<p>' + settings.login_message.value + '</p><input type="' + (settings.id_type.value ? 'number' : 'text') + '" name="id" required /><button type="submit">' + submit_text + '</button>');
     form.off();
     form.submit(function(event){
         event.preventDefault();
@@ -107,11 +110,11 @@ function login(){
         var id = form.find('input').val();
         if(id == "admin"){
             admin();
-        }else if(id.length !== 0 && (get_number(id) !== false || !settings.id_type)){
+        }else if(id.length !== 0 && (get_number(id) !== false || !settings.id_type.value)){
             var button = form.find('button');
             button.attr('disabled', true);
             $.ajax({
-                url: address + "system/request.php?request=system/login&" + form.serialize() + serialize(settings),
+                url: address + "system/request.php?app_id=" + app_id + "&request=system/login&" + form.serialize() + serialize_settings(),
                 type: "GET",
                 timeout: 3000,
                 dataType: "json",
@@ -128,7 +131,7 @@ function login(){
                     alert(data.order.alert);
                 }
             }).fail(function(result){
-                alert(settings.connect_error);
+                alert(settings.connect_error.value);
             });
         }
     });
@@ -142,6 +145,22 @@ function serialize(array){
     return result
 }
 
+function serialize_settings(){
+    result = "";
+    for(key in settings){
+        result += "&" + key + "=" + settings[key].value;
+    }
+    return result
+}
+
 function admin(){
+    
+    var form = $("#form");
+    $.each(settings, function(){
+        
+    });
+}
+
+function change_settings(){
 
 }

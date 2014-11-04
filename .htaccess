@@ -1,4 +1,6 @@
-DirectoryIndex index.html
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php [QSA,L]
 Options -Indexes
 
 <Files ~ "\.(log|htaccess)$">
@@ -10,6 +12,6 @@ deny from all
 <Files ~ "\.(js|html|css)$">
 allow from all
 </Files>
-<Files ~ "^(request.php)$">
+<Files ~ "^(request|index).php$">
 allow from all
 </Files>

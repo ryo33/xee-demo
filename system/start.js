@@ -1,26 +1,24 @@
-$("title").append(title);
-$("#header").append(header);
-$("#footer").append(footer);
-address = location.href;
-if(address.slice(-1) !== "/"){
-    address = address + "/";
-}
+var address = $(location).attr("href");
+address = address.replace(new RegExp(app_id + "\/?$"), "");
 
 var settings = {};
+var small_settings = {};
 var id = "";
 
 $.ajax({
-    url: address + "system/request.php?request=system/setting" + get_settings(),
+    url: address + "system/request.php?app_id=" + app_id + "&request=system/setting",
     type: "GET",
     dataType: "json"
 }).done(function(data){
-    settings = data
-    $("p").text(settings.login_message);
-    id = get("id")
-    if(id){
+    $("title").append(title);
+    $("#header").append(header);
+    $("#footer").append(footer);
+    settings = data;
+    if(get("id")){
         refresh();
     }else{
         login();
+        $("form").children("p").text(settings.login_message.value);
+        id = get("id");
     }
 });
-

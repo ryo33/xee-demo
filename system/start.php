@@ -5,7 +5,6 @@ if($_SERVER["SERVER_NAME"] === "microecolib.localhost"){
 }else{
     require '../SETTING.php';
 }
-require '../app/setting.php';
 $includes = array(
     "function",
     "EasySql",
@@ -22,6 +21,9 @@ define('CREATED', 0);
 define('STARTED', 1);
 define('ENDED', 2);
 
+define('STR', 0);
+define('NUM', 1);
+
 /////////////////////////////////////////////////////////////////////////////////////////////sanitizing
 foreach($_GET  as $key => $value){
     $_GET[$key] = mb_convert_encoding($_GET[$key],'utf8','auto');
@@ -36,3 +38,4 @@ $_REQUEST = delete_null_byte($_REQUEST);
 
 //preparing
 $con = new EasySql($databass_dsn, $databass_username, $databass_password);
+$app_id = get_get('app_id');

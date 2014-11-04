@@ -1,10 +1,9 @@
 <?php
-
-$settings = explode(',', $_GET['settings']);
-
 $result = array();
-foreach($settings as $name){
-    $result[$name] = $con->fetchColumn('SELECT `value` FROM `setting` WHERE `name` = ?', array($name));
+$settings = $con->fetchAll('SELECT `name`, `value`, `type`, `desc` FROM `setting` WHERE `app_id` = ?', $app_id);
+foreach($settings as $setting){
+    $name = $setting['name'];
+    unset($setting['name']);
+    $result[$name] = $setting;
 }
-
 echo render_json($result);

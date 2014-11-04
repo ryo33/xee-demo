@@ -1,6 +1,6 @@
 <?php
 
-function getGet($name,$default=null)
+function get_get($name,$default=null)
 {
     if(isset($_GET[$name])){
         return $_GET[$name];
@@ -8,7 +8,7 @@ function getGet($name,$default=null)
     return $default;
 }
 
-function getPost($name,$default=null)
+function get_post($name,$default=null)
 {
     if(isset($_POST[$name])){
         return $_POST[$name];
@@ -128,7 +128,7 @@ function render_json($data){
                 $result[] = "\"$key\": \"$item\"";
             }
         }else{
-            $result[] = "$key: " . render_json($item);
+            $result[] = "\"$key\": " . render_json($item);
         }
     }
     return '{' . join(', ', $result) .'}';
