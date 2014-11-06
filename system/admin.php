@@ -6,11 +6,12 @@ case 'getstate':
     $state = $fetched['state'];
     $game_id = $fetched['game_id'];
     if($state === '1'){
-        $html = $con->fetchColumn('SELECT COUNT(`group_id`) from `group` WHERE `app_id` = ? AND `game_id` = ?', array($app_id, $game_id)) + " groups";
+        $html = $con->fetchColumn('SELECT COUNT(`group_id`) from `group` WHERE `app_id` = ? AND `game_id` = ?', array($app_id, $game_id)) . ' groups';
     }else if($state === '0'){
-        $html = "No everyone joined";
+        $people = get_get('people');
+        $html = $con->fetchColumn('SELECT COUNT(`player_id`) from `player` WHERE `app_id` = ? AND `game_id` = ?', array($app_id, $game_id)) . '/' . $people . ' No everyone joined';
     }else if($state === '2'){
-        $html = "The game ended";
+        $html = 'The game ended';
     }
 
     $result = array('order'=>array('state'=>$state), 'html'=>array('adminpage'=>"<p>" . $html . "</p>"));

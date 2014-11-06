@@ -44,9 +44,13 @@ function render_logout(){
         $("#footer").append("<button id=\"logout\">" + settings.logout.value + "</button>");
         $("#logout").click(function(){
             remove("id");
-            $(location).attr("href", "/" + app_id);
+            redirect();
         });
     }
+}
+
+function redirect(){
+    $(location).attr("href", "/" + app_id);
 }
 
 function process(data){
@@ -54,6 +58,9 @@ function process(data){
     render_by_array(data.html);
     if(data.order.alert){
         alert(data.order.alert);
+    }
+    if(data.order.state && data.order.state == 2){
+        redirect();
     }
     set_wait(data.order.wait);
     submit();
