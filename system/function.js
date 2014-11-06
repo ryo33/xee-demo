@@ -232,7 +232,11 @@ function admin_refresh(){
     }).done(function(data){
         var main = $("#main");
         main.empty();
-        main.append("<h3>Admin Page</h3>");
+        main.off();
+        main.append("<h3>Admin Page</h3><div id=\"adminpage\"></div");
+        if("html" in data){
+            render_by_array(data.html);
+        }
         if(check_data(data.order.state) === 0 || check_data(data.order.state) === 1){
             main.append("<button id=\"end\">Terminate The Game</button>");
             main.children("button").click(function(){

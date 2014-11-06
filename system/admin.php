@@ -2,8 +2,18 @@
 $action = get_get('action');
 switch($action){
 case 'getstate':
-    $state = $con->fetchColumn('SELECT `state` from `game` WHERE `app_id` = ? ORDER BY `game_id` DESC', array($app_id));
-    $result = array('order'=>array('state'=>$state));
+    $fetched = $con->fetch('SELECT `state`, `game_id` from `game` WHERE `app_id` = ? ORDER BY `game_id` DESC', array($app_id));
+    $state = $fetched['state'];
+    $game_id = $fetched['game_id'];
+    if($state === '1'){
+        $html = $con->fetchColumn('SELECT COUNT(`group_id`) from `group` WHERE `app_id` = ? AND `game_id` = ?', array($app_id, $game_id)) + " groups";
+    }else if($state === '0'){
+        $html = "No everyone joined";
+    }else if($state === '2'){
+        $html = "The game ended";
+    }
+
+    $result = array('order'=>array('state'=>$state), 'html'=>array('adminpage'=>"<p>" . $html . "</p>"));
     echo render_json($result);
     break;
 case 'get':
