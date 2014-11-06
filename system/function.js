@@ -196,6 +196,25 @@ function admin(){
                 form.append("<p><label><input type=\"" + (setting.type ? "number" : "text") + "\" id=\"" + key + "\" name=\"" + key + "\" value=\"" + setting.value + "\" />" + setting.desc + "</label></p>");
             });
             form.append("<button type=\"submit\">" + settings.submit.value + "</button>");
+            form.submit(function(event){
+                event.preventDefault();
+                var form = $(this);
+                var new_settings = form.serialize().split("&");
+                var result = "&settings=";
+                for(i in new_settings){
+                    var setting = new_settings[i].split("=");
+                    new_settings[i] = setting[0] + ":" + String(setting[1]);
+                    settings[setting[0]].value = setting[1];
+                }
+                $.ajax({
+                    url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=change" + serialize_settings() + "&settings=" + new_settings.join(","),
+                    type: "GET",
+                    timeout: settings.timeout.value,
+                    dataType: "json",
+                }).done(function(data){
+                    alert("Changed Settings");
+                }).fail(connect_error);
+            });
             admin_refresh();
         }else{
             login();
@@ -206,7 +225,7 @@ function admin(){
 function admin_refresh(){
     render_logout();
     $.ajax({
-        url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=get" + serialize_settings(),
+        url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=getstate" + serialize_settings(),
         type: "GET",
         timeout: settings.timeout.value,
         dataType: "json",
@@ -239,16 +258,8 @@ function admin_refresh(){
                 }).fail(connect_error);
             });
         }
-        $.each(data.settings, function(key, setting){
-            $("#" + key).val(setting);
-            settings[key].value = setting;
-        });
         sleep(5000).done(admin_refresh);
     }).fail(connect_error);
-}
-
-function change_settings(){
-    //TODO
 }
 
 function check_data(data){

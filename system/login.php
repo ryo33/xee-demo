@@ -1,5 +1,4 @@
 <?php
-
 function make_groups($players){
     
 }
