@@ -23,8 +23,11 @@ function is_set(value){
 
 function render(selector, data){
     var container = $(selector);
-    container.empty();
-    container.append(data);
+    if(container.html() != data){
+        alert(container.html() + '\n' + data);
+        container.empty();
+        container.append(data);
+    }
 }
 
 function render_by_array(data){
@@ -43,7 +46,6 @@ function render_logout(){
     if(!$("#footer").children("button").get(0)){
         $("#footer").append("<button id=\"logout\">" + settings.logout.value + "</button>");
         $("#logout").click(function(){
-            remove("id");
             redirect();
         });
     }
@@ -75,7 +77,7 @@ function submit(){
         var button = form.find('button');
         button.attr('disabled', true);
         $.ajax({
-            url: address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/form?id=" + id + "&" + form.serialize() + serialize_settings(),
+            url: address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/form&id=" + id + "&" + form.serialize() + serialize_settings(),
             type: "GET",
             timeout: settings.timeout.value,
             dataType: "json",
