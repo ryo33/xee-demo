@@ -37,13 +37,13 @@ function get_game(){
 function get_groups(){
     global $con, $app_id, $game_id, $state;
     init();
-    if($state !== STARTED){
+    if($state != STARTED){
         return $state;
     }
     $groups = $con->fetchAll('SELECT `group_id`, `turn` FROM `group` WHERE `app_id` = ? AND `game_id` = ?', array($app_id, $game_id));
     $result = array();
     foreach($groups as $group){
-        $result[$group['group_id']] = $con->fetchAllColumn('SELECT `player_id` FROM `group` WHERE `app_id` = ? AND `game_id` = ? AND `group_id` = ?',
+        $result[$group['group_id']] = $con->fetchColumnAll('SELECT `player_id` FROM `player` WHERE `app_id` = ? AND `game_id` = ? AND `group_id` = ?',
             array($app_id, $game_id, $group['group_id']));
     }
     return $result;

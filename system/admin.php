@@ -3,6 +3,10 @@ $action = get_get('action');
 switch($action){
 case 'getstate':
     $fetched = $con->fetch('SELECT `state`, `game_id` from `game` WHERE `app_id` = ? ORDER BY `game_id` DESC', array($app_id));
+    if(!isset($fetched['state'])){
+        echo render_json(array('order'=>array('state'=>'2')));
+        break;
+    }
     $state = $fetched['state'];
     $game_id = $fetched['game_id'];
     if($state === '1'){

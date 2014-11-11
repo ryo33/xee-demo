@@ -17,6 +17,7 @@ if(!isset($matches[1])){
     <div id="header"></div>
     <div id="main"></div>
     <form id="form"></form>
+    <hr>
     <div id="footer"></div>
 </div>
 <script><?php

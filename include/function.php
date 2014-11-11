@@ -120,11 +120,15 @@ function delete_null_byte($value){
 
 function render_json($data){
     $result = array();
+    if(!is_array($data)){
+        var_dump($data);
+    }
     foreach($data as $key=>$item){
-        if(is_string($item)){
-            if(is_numeric($item)){
+        if(!is_array($item)){
+            if(is_int($item) || is_numeric($item)){
                 $result[] = "\"$key\": $item";
             }else{
+                $item = str_replace('"', '\"', $item);
                 $result[] = "\"$key\": \"$item\"";
             }
         }else{
