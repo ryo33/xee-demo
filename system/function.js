@@ -59,7 +59,7 @@ function process(data){
     if(data.order.alert){
         alert(data.order.alert);
     }
-    if(data.order.state && data.order.state == 2){
+    if(data.order.state && data.order.state >= 2){
         redirect();
     }
     set_wait(data.order.wait);
@@ -143,7 +143,6 @@ function login(){
                 form[0].reset();
                 if(data.meta.state !== "failure"){
                     id = data.order.id;
-                    set('id', id);
                     form.empty();
                     check_game();
                 }else{
@@ -269,7 +268,7 @@ function admin_refresh(){
                 }).fail(connect_error);
             });
         }
-        sleep(5000).done(admin_refresh);
+        sleep(1000).done(admin_refresh);
     }).fail(connect_error);
 }
 

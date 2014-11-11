@@ -12,6 +12,8 @@ case 'getstate':
         $html = $con->fetchColumn('SELECT COUNT(`player_id`) from `player` WHERE `app_id` = ? AND `game_id` = ?', array($app_id, $game_id)) . '/' . $people . ' No everyone joined';
     }else if($state === '2'){
         $html = 'The game ended';
+    }else{
+        $html = 'The game terminated';
     }
 
     $result = array('order'=>array('state'=>$state), 'html'=>array('adminpage'=>"<p>" . $html . "</p>"));
@@ -39,7 +41,7 @@ case 'change':
     echo render_json(array('meta'=>array('state'=>'success')));
     break;
 case 'end':
-    $con->execute('UPDATE `game` SET `state` = ? WHERE `app_id` = ? ORDER BY `game_id` DESC', array(ENDED, $app_id));
+    $con->execute('UPDATE `game` SET `state` = ? WHERE `app_id` = ? ORDER BY `game_id` DESC LIMIT 1', array(3, $app_id));//3 is TERMINATED
     echo render_json(array('meta'=>array('state'=>'success')));
     break;
 case 'start':

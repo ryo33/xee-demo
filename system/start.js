@@ -14,10 +14,6 @@ $.ajax({
     $("#header").append(header);
     $("#footer").append(footer);
     settings = data;
-    if(id = get("id")){
-        check_game();
-    }else{
-        login();
-        $("form").children("p").text(settings.login_message.value);
-    }
+    login();
+    $("form").children("p").text(settings.login_message.value);
 });
