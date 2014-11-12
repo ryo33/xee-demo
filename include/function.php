@@ -119,6 +119,10 @@ function delete_null_byte($value){
 }
 
 function render_json($data){
+    exit(format_json($data));
+}
+
+function format_json($data){
     $result = array();
     if(!is_array($data)){
         var_dump($data);
