@@ -11,6 +11,12 @@ function rerender($time=1){
     exit();
 }
 
+function refresh($time=1){
+    global $state;
+    echo render_json(array('order'=>array('wait'=>$time, 'state'=>$state, 'next'=>'refresh')));
+    exit();
+}
+
 function get_game_id(){
     global $game_id;
     init();
@@ -110,7 +116,7 @@ function exist_game_var($name){
 }
 
 function get_group($id){
-    global $con, $app_id, $game_id;
+    global $con, $app_id, $game_id, $appgame;
     init();
     $group_id = $con->fetchColumn('SELECT `group_id` FROM `player` WHERE ' . $appgame . ' AND `player_id` = ?', array($app_id, $game_id, $id));
     return $con->fetch('SELECT `group_id`, `turn` FROM `group` WHERE ' . $appgame . ' AND `group_id` = ?', array($app_id, $game_id, $group_id));

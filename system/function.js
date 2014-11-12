@@ -35,10 +35,10 @@ function render_by_array(data){
     });
 }
 
-function set_wait(wait, page='refresh'){
+function set_wait(wait){
     if(wait !== 0){
         sleep(wait).done(function(){
-            refresh(page)
+            refresh()
         });
     }
 }
@@ -56,7 +56,7 @@ function redirect(){
     $(location).attr("href", "/" + app_id);
 }
 
-function process(data, before="refresh"){
+function process(data){
     render_logout();
     if(data.html){
         render_by_array(data.html);
@@ -68,9 +68,10 @@ function process(data, before="refresh"){
         redirect();
     }
     if(data.order.next){
-        set_wait(data.order.wait, data.order.next);
-    }else{
-        set_wait(data.order.wait, before);
+        nextpage = data.order.next;
+    }
+    if(get_number(data.order.wait) != 0){
+        set_wait(data.order.wait);
     }
     submit();
 }
@@ -97,13 +98,13 @@ function submit(){
     });
 }
 
-function render_from_url(url, next="refresh"){
+function render_from_url(url){
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
     }).done(function(data){
-        process(data, next);
+        process(data);
     }).fail(connect_error);
 }
 
@@ -115,8 +116,8 @@ function sleep(ms){
     return d.promise();
 };
 
-function refresh(next="refresh"){
-    render_from_url(address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/" + next + "&id=" + id + serialize_settings(), next);
+function refresh(){
+    render_from_url(address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/" + nextpage + "&id=" + id + serialize_settings());
 }
 
 function get_number(text){

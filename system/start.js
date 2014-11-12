@@ -4,6 +4,7 @@ address = address.replace(new RegExp(app_id + "\/?$"), "");
 var settings = {};
 var small_settings = {};
 var id = "";
+var nextpage = "refresh";
 
 $.ajax({
     url: address + "system/request.php?app_id=" + app_id + "&request=system/setting",
