@@ -5,10 +5,22 @@ $appgame = '`app_id` = ? AND `game_id` = ?';
 $game_id = null;
 $state = null;
 
-function rerender(){
+function rerender($time=1){
     global $state;
-    echo render_json(array('order'=>array('wait'=>1, 'state'=>$state)));
+    echo render_json(array('order'=>array('wait'=>$time, 'state'=>$state)));
     exit();
+}
+
+function get_game_id(){
+    global $game_id;
+    init();
+    return $game_id;
+}
+
+function get_state(){
+    global $state;
+    init();
+    return $state;
 }
 
 function endgame(){
