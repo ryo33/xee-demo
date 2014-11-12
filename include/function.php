@@ -136,7 +136,7 @@ function format_json($data){
                 $result[] = "\"$key\": \"$item\"";
             }
         }else{
-            $result[] = "\"$key\": " . render_json($item);
+            $result[] = "\"$key\": " . format_json($item);
         }
     }
     return '{' . join(', ', $result) .'}';
