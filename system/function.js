@@ -35,10 +35,10 @@ function render_by_array(data){
     });
 }
 
-function set_wait(wait){
+function set_wait(wait, loop){
     if(wait !== 0){
         sleep(wait).done(function(){
-            refresh()
+            refresh(loop)
         });
     }
 }
@@ -56,22 +56,22 @@ function redirect(){
     $(location).attr("href", "/" + app_id);
 }
 
-function process(data){
+function process(data, loop){
     render_logout();
+    if(data.order.state && data.order.state >= 2){
+        redirect();
+    }
     if(data.html){
         render_by_array(data.html);
     }
     if(data.order.alert){
         alert(data.order.alert);
     }
-    if(data.order.state && data.order.state >= 2){
-        redirect();
-    }
     if(data.order.next){
         nextpage = data.order.next;
     }
     if(get_number(data.order.wait) != 0){
-        set_wait(data.order.wait);
+        set_wait(data.order.wait, loop);
     }
     submit();
 }
@@ -93,18 +93,22 @@ function submit(){
             button.attr('disabled', false);
         }).done(function(data){
             form[0].reset();
-            process(data);
+            nextpage = 'refresh';
+            if(data.order.next){
+                nextpage = data.order.next;
+            }
+            refresh(++current_loop);
         }).fail(connect_error);
     });
 }
 
-function render_from_url(url){
+function render_from_url(url, loop){
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
     }).done(function(data){
-        process(data);
+        process(data, loop);
     }).fail(connect_error);
 }
 
@@ -116,8 +120,11 @@ function sleep(ms){
     return d.promise();
 };
 
-function refresh(){
-    render_from_url(address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/" + nextpage + "&id=" + id + serialize_settings());
+function refresh(loop){
+    console.log(loop + ":" + current_loop);
+    if(loop == current_loop){
+        render_from_url(address + "system/request.php?app_id=" + app_id + "&request=app/" + app_id + "/" + nextpage + "&id=" + id + serialize_settings(), loop);
+    }
 }
 
 function get_number(text){
@@ -166,16 +173,19 @@ function login(){
 function check_game(){
     render_logout();
     $.ajax({
-        url: address + "system/request.php?app_id=" + app_id + "&request=system/admin&action=get" + serialize_settings(),
+        url: address + "system/request.php?app_id=" + app_id + "&id=" + id + "&request=system/admin&action=ask" + serialize_settings(),
         type: "GET",
         timeout: settings.timeout.value,
         dataType: "json",
     }).done(function(data){
-        if(check_data(data.order.state) === 1){
-            refresh();
-        }else{
+        if(check_data(data.order.state) !== 1){
             $("#main").text(settings.waiting.value);
             sleep(5000).done(check_game);
+        }else if(!data.order.isjoin){
+            $("#main").text(settings.wait_group.value);
+            sleep(5000).done(check_game);
+        }else{
+            refresh(++current_loop);
         }
     }).fail(connect_error);
 }

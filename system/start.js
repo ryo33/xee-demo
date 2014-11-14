@@ -5,6 +5,7 @@ var settings = {};
 var small_settings = {};
 var id = "";
 var nextpage = "refresh";
+var current_loop = 0;
 
 $.ajax({
     url: address + "system/request.php?app_id=" + app_id + "&request=system/setting",

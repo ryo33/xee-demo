@@ -32,6 +32,13 @@ case 'get':
     }
     echo render_json($result);
     break;
+case 'ask':
+    $id = get_get('id');
+    $state = $con->fetchColumn('SELECT `state` FROM `game` WHERE `app_id` = ? ORDER BY `game_id` DESC', array($app_id));
+    $isjoin = strlen($con->fetchColumn('SELECT `group_id` FROM `player` WHERE `app_id` = ? AND `game_id` = ? AND `player_id` = ?', array($app_id, get_game_id(), $id))) > 0;
+    $result = array('order'=>array('state'=>$state, 'isjoin'=>$isjoin));
+    echo render_json($result);
+    break;
 case 'change':
     $settings = explode(',', get_get('settings'));
     foreach($settings as $setting){

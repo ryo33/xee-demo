@@ -30,7 +30,7 @@ function get_state(){
 }
 
 function endgame(){
-    global $state, $app_id, $game_id, $con;
+    global $appgame, $state, $app_id, $game_id, $con;
     $con->execute('UPDATE `game` SET `state` = 2 WHERE ' . $appgame, array($app_id, $game_id));
     $state = 2;
     rerender();
@@ -73,9 +73,15 @@ function insert_var($type, $id, $name, $value){
     $con->insert($type . '_var', array('app_id', 'game_id', $type . '_id', 'name', 'value'), array($app_id, $game_id, $id, $name, $value));
 }
 
-function get_var($type, $id, $name){
+function get_var($type, $id, $name, $array=null){
     global $con, $app_id, $game_id;
     init();
+    if($array !== null){
+        if(!is_array($array)){
+            $array = array($array);
+        }
+        return $con->fetchColumnAll('SELECT `value` FROM `' . $type . '_var` WHERE `app_id` = ? AND `game_id` = ? AND `' . $type . '_id` = ? AND ' . $name, array_merge(array($app_id, $game_id, $id), $array));
+    }
     return $con->fetchColumn('SELECT `value` FROM `' . $type . '_var` WHERE `app_id` = ? AND `game_id` = ? AND `' . $type . '_id` = ? AND `name` = ?', array($app_id, $game_id, $id, $name));
 }
 

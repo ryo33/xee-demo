@@ -129,7 +129,11 @@ function format_json($data){
     }
     foreach($data as $key=>$item){
         if(!is_array($item)){
-            if(is_int($item) || is_numeric($item)){
+            if($item === true){
+                $result[] = "\"$key\": true";
+            }else if($item === false){
+                $result[] = "\"$key\": false";
+            }else if(is_int($item) || is_numeric($item)){
                 $result[] = "\"$key\": $item";
             }else{
                 $item = str_replace('"', '\"', $item);
