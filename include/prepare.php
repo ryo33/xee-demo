@@ -85,6 +85,12 @@ function get_var($type, $id, $name, $array=null){
     return $con->fetchColumn('SELECT `value` FROM `' . $type . '_var` WHERE `app_id` = ? AND `game_id` = ? AND `' . $type . '_id` = ? AND `name` = ?', array($app_id, $game_id, $id, $name));
 }
 
+function get_vars($type, $name){
+    global $con, $app_id, $game_id;
+    init();
+    return $con->fetchAll('SELECT `value`, `' . $type . '_id` FROM `' . $type . '_var` WHERE `app_id` = ? AND `game_id` = ? AND `name` = ?', array($app_id, $game_id, $name));
+}
+
 function set_var($type, $id, $name, $value){
     global $con, $app_id, $game_id;
     init();

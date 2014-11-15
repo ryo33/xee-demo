@@ -59,7 +59,7 @@ function redirect(){
 function process(data, loop){
     render_logout();
     if(data.order.state && data.order.state >= 2){
-        redirect();
+        nextpage = "result";
     }
     if(data.html){
         render_by_array(data.html);
@@ -175,7 +175,10 @@ function check_game(){
         type: "GET", cache: false,
         timeout: settings.timeout.value,
         dataType: "json" }).done(function(data){
-        if(check_data(data.order.state) !== 1){
+        if(check_data(data.order.state) >= 2){
+            nextpage = "result";
+            refresh(++current_loop);
+        }else if(check_data(data.order.state) !== 1){
             $("#main").text(settings.waiting.value);
             sleep(5000).done(check_game);
         }else if(!data.order.isjoin){
